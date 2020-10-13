@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.io.*;
 import java.nio.file.*;
-import java.time.LocalDate;
 import java.util.*;
 
 
@@ -28,25 +27,22 @@ public class BestGymEver {
         Path filepath = Paths.get("src/files/customer/customers.txt");
         List<Customer> customerList = createCustomerList(filepath);
 
-        dialogBoxOut("Startar Best Gym Ever");
+        dialogBoxOut("Välkommen till Best Gym Ever");
         while (true) {
             String nameOrSSNumber = dialogBoxInput("Namn eller Personnummer", "");
-
-            if (nameOrSSNumber == null || nameOrSSNumber.trim().equalsIgnoreCase("exit")) {
-                dialogBoxOut("Programmet stängs ner.");
-                System.exit(0);
-            }
             Customer customer = checkIfCustomerExistInList(customerList, nameOrSSNumber.trim());
             if (customer == null) {
                 if (nameOrSSNumber.isBlank())
                     dialogBoxOut("Du måste skriva namn eller personnummer");
                 else dialogBoxOut(nameOrSSNumber + "\nFinns inte i registret");
-            } else {
-                boolean didPay = checkPaidLastDate(customer);
-                if (didPay) {
-                    writeCustomerVisitDate(customer, getCustomerFilepath(customer.getSocialSecurityNumber()));
+            }
+            else {
+                if (customer.getHasPaid()) {
+                    customer.writeVisitDateToFile(Path.of(""));
                     dialogBoxOut(customer.getName() + "\nHar betalat sitt medlemskap.");
-                } else dialogBoxOut(customer.getName() + "\nHar inte betalat de senaste året.");
+                }
+                else
+                    dialogBoxOut(customer.getName() + "\nHar inte betalat de senaste året.");
             }
         }
     }
@@ -65,6 +61,8 @@ public class BestGymEver {
         else
             input = (String) JOptionPane.showInputDialog(null, message, TITLE,
                     JOptionPane.INFORMATION_MESSAGE, ICON, null, "");
+        if (input == null || input.trim().equalsIgnoreCase("exit"))
+            System.exit(0);
         return input;
     }
 
@@ -78,6 +76,7 @@ public class BestGymEver {
         if (x == JOptionPane.CLOSED_OPTION)
             System.exit(0);
     }
+
 
     /**
      * Create a list with customers from a file.
@@ -120,61 +119,4 @@ public class BestGymEver {
         }
         return null;
     }
-
-    /**
-     * Checking if the customer has paid in the last year.
-     *
-     * @param customer A customer.
-     * @return A true if the customer has paid in the last year else its false.
-     */
-    public boolean checkPaidLastDate(Customer customer) {
-        if (customer == null)
-            throw new IllegalArgumentException("Error: Customer is null");
-        if (customer.getLastPaidDate() == null || customer.getLastPaidDate().equals(""))
-            return false;
-        LocalDate dateOneYearAgo = LocalDate.now().minusYears(1);
-        LocalDate lastPaidDate = LocalDate.parse(customer.getLastPaidDate());
-        return dateOneYearAgo.isBefore(lastPaidDate) || dateOneYearAgo.equals(lastPaidDate);
-    }
-
-    //todo fixa throwsen i getCustomerfilepath
-    /**
-     * This method creates a file for the customer.
-     *
-     * @param socialSecurityNumber A string to name the file.
-     * @return Customers file.
-     */
-    public Path getCustomerFilepath(String socialSecurityNumber) {
-        if (socialSecurityNumber == null)
-            throw new IllegalArgumentException("Error: Input is null");
-        if (socialSecurityNumber.isEmpty())
-            throw new InputMismatchException("Error: Input is empty");
-        return Paths.get("src/files/customer/" + socialSecurityNumber + ".txt");
-    }
-
-    /**
-     * Write a string if the customer visit the gym to a personal file.
-     *
-     * @param customer A customer.
-     * @param filepath The file to write on.
-     */
-    public void writeCustomerVisitDate(Customer customer, Path filepath) {
-        if (customer == null || filepath == null)
-            throw new IllegalArgumentException("Error: Input may be null");
-        LocalDate date = LocalDate.now();
-        boolean checkFile = Files.exists(filepath);
-
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(String.valueOf(filepath), true))) {
-            if (!checkFile)
-                bufferedWriter.write("Kund: " + customer.getName() +
-                        "\nPersonnummer: " + customer.getSocialSecurityNumber() + "\n");
-            bufferedWriter.write("\nDatum: " + date);
-            System.out.println("Sparat datum på kundens fil.");
-        } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-
 }
