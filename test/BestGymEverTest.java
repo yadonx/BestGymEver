@@ -1,5 +1,6 @@
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 import java.nio.file.*;
@@ -22,14 +23,6 @@ public class BestGymEverTest {
     public void setUp() throws Exception {
         bestGymEver = new BestGymEver();
         filepath = Paths.get("test/files/customersTest.txt");
-    }
-
-    @Test
-    public void test_dialogue_box_if_input_is_null() {
-        bestGymEver.test = true;
-        String input = bestGymEver.dialogBoxInput("", null);
-        assertNotEquals("hej", input);
-        assertNull(input);
     }
 
     @Test
