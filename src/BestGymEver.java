@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.io.*;
 import java.nio.file.*;
+import java.time.LocalDate;
 import java.util.*;
 
 
@@ -61,7 +62,7 @@ public class BestGymEver {
         else
             input = (String) JOptionPane.showInputDialog(null, message, TITLE,
                     JOptionPane.INFORMATION_MESSAGE, ICON, null, "");
-        if (input == null || input.trim().equalsIgnoreCase("exit"))
+        if (input == null)
             System.exit(0);
         return input;
     }
@@ -72,11 +73,10 @@ public class BestGymEver {
      * @param message A message that shows in the dialog box.
      */
     public void dialogBoxOut(String message) {
-        int x = JOptionPane.showConfirmDialog(null, message, TITLE, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ICON);
-        if (x == JOptionPane.CLOSED_OPTION)
+        int exitOrContinue = JOptionPane.showConfirmDialog(null, message, TITLE, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ICON);
+        if (exitOrContinue == JOptionPane.CLOSED_OPTION)
             System.exit(0);
     }
-
 
     /**
      * Create a list with customers from a file.
@@ -89,10 +89,10 @@ public class BestGymEver {
             throw new IllegalArgumentException("Error: Input is null");
         List<Customer> theList = new ArrayList<>();
         try (Scanner sc = new Scanner(new File(String.valueOf(filepath)))) {
-            while (sc.hasNextLine()) {
+            while (sc.hasNext()) {
                 String socialSecurityNumber = sc.next().trim().replace(",", "");
                 String name = sc.nextLine().trim();
-                String lastPaidDate = sc.nextLine().trim();
+                LocalDate lastPaidDate = LocalDate.parse(sc.nextLine().trim());
                 theList.add(new Customer(socialSecurityNumber, name, lastPaidDate));
             }
         } catch (FileNotFoundException e) {

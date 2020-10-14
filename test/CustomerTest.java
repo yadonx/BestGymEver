@@ -16,18 +16,7 @@ import java.util.*;
  * Project: Best Gym Ever
  */
 public class CustomerTest {
-    Customer customer;
-
-    @Before
-    public void setUp() throws Exception {
-        customer = new Customer("0203021234", "Steffe Steffson", "2019-12-01");
-    }
-
-    @Test(expected = InputMismatchException.class)
-    public void should_throw_IllegalArgumentException_if_lastPaidDate_is_empty() {
-        Customer customer = new Customer("", "", "");
-
-    }
+    Customer customer = new Customer("0203021234", "Steffe Steffson", LocalDate.now());
 
     @Test(expected = InputMismatchException.class)
     public void should_throw_IllegalArgumentException_if_lastPaidDate_is_null() {
@@ -36,19 +25,18 @@ public class CustomerTest {
 
     @Test
     public void test_if_Customer_has_paid_in_last_year() {
-        Customer customer = new Customer("", "", LocalDate.now().toString());
         assertTrue(customer.getHasPaid());
     }
 
     @Test
     public void test_if_Customer_has_paid_exactly_one_year_ago() {
-        Customer customer = new Customer("", "", LocalDate.now().minusYears(1).toString());
+        Customer customer = new Customer("", "", LocalDate.now().minusYears(1));
         assertTrue(customer.getHasPaid());
     }
 
     @Test
     public void test_if_Customer_has_paid_two_years_ago() {
-        Customer customer = new Customer("", "", LocalDate.now().minusYears(2).toString());
+        Customer customer = new Customer("", "", LocalDate.now().minusYears(2));
         assertFalse(customer.getHasPaid());
     }
 
@@ -85,13 +73,13 @@ public class CustomerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void should_throw_IllegalArgumentException_if_Path_is_null_in_writeVisitDateToFile(){
-        Customer customer = new Customer(null,"","2018-12-02");
+        Customer customer = new Customer(null,"",LocalDate.parse("2018-12-02"));
         customer.writeVisitDateToFile(Path.of(""));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void should_throw_IllegalArgumentException_if_Customer_is_empty_in_writeVisitDateToFile(){
-        Customer customer = new Customer("","","2018-12-02");
+        Customer customer = new Customer("","",LocalDate.parse("2018-12-02"));
         customer.writeVisitDateToFile(Path.of(""));
     }
 

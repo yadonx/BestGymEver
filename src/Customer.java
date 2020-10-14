@@ -17,12 +17,12 @@ public class Customer{
     private final LocalDate lastPaidDate;
     private boolean hasPaid;
 
-    public Customer(String socialSecurityNumber, String name, String lastPaidDate) {
-        if (lastPaidDate == null || lastPaidDate.isEmpty())
-            throw new InputMismatchException("Error: lastPaidDate is either null or empty");
+    public Customer(String socialSecurityNumber, String name, LocalDate lastPaidDate) {
+        if (lastPaidDate == null)
+            throw new InputMismatchException("Error: lastPaidDate is null");
         this.name = name;
         this.socialSecurityNumber = socialSecurityNumber;
-        this.lastPaidDate = LocalDate.parse(lastPaidDate);
+        this.lastPaidDate = lastPaidDate;
         this.hasPaid = getHasPaid();
     }
 
