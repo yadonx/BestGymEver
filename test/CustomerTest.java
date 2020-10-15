@@ -1,4 +1,3 @@
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -82,6 +81,5 @@ public class CustomerTest {
         Customer customer = new Customer("","",LocalDate.parse("2018-12-02"));
         customer.writeVisitDateToFile(Path.of(""));
     }
-
 
 }

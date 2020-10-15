@@ -23,7 +23,7 @@ public class Customer{
         this.name = name;
         this.socialSecurityNumber = socialSecurityNumber;
         this.lastPaidDate = lastPaidDate;
-        this.hasPaid = getHasPaid();
+        setHasPaid();
     }
 
     public String getName() {
@@ -38,14 +38,13 @@ public class Customer{
         return lastPaidDate;
     }
 
-    /**
-     * Checking if the customer has paid in the last year.
-     *
-     * @return A true if the customer has paid in the last year else its false.
-     */
-    public boolean getHasPaid() {
+    private void setHasPaid() {
         LocalDate dateOneYearAgo = LocalDate.now().minusYears(1);
-        return dateOneYearAgo.isBefore(lastPaidDate) || dateOneYearAgo.equals(lastPaidDate);
+        this.hasPaid = dateOneYearAgo.isBefore(lastPaidDate) || dateOneYearAgo.equals(lastPaidDate);
+    }
+
+    public boolean getHasPaid(){
+        return hasPaid;
     }
 
     /**
